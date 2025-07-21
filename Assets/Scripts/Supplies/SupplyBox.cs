@@ -10,13 +10,13 @@ public class SupplyBox : MonoBehaviour
     
     public Action<SupplyBox> OnDestroy;
 
-    public BoxCollider Boxcollider { get; private set; }
+    public BoxCollider BoxCollider { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
 
 
     private void Start()
     {
-        Boxcollider = GetComponent<BoxCollider>();
+        BoxCollider = GetComponent<BoxCollider>();
         Rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -25,7 +25,7 @@ public class SupplyBox : MonoBehaviour
         transform.SetParent(parent);
         transform.position = new Vector3(parent.position.x + _offsetX, parent.position.y + _offsetY, parent.position.z);
         Rigidbody.isKinematic = true;
-        Boxcollider.enabled = false;
+        BoxCollider.enabled = false;
     }
 
     public void Destroy()

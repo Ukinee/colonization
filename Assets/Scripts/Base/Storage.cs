@@ -21,6 +21,16 @@ public class Storage : MonoBehaviour
         _suppliesToDeliver = new List<SupplyBox>();
     }
 
+    private void OnEnable()
+    {
+        _scoreCounter.RequirementReached += ExpandCollectors;
+    }
+
+    private void OnDisable()
+    {
+        _scoreCounter.RequirementReached -= ExpandCollectors;
+    }
+
     public SupplyBox AssignTask()
     {
         SupplyBox task;
@@ -56,10 +66,15 @@ public class Storage : MonoBehaviour
         _scoreCounter.Add();
     }
 
+    private void ExpandCollectors()
+    {
+        _collectorSpawner.ExpansionCollectorsAmount();
+    }
+
     private void RemoveSuppliesFromCollection(SupplyBox supply)
     {
         _suppliesToDeliver.Remove(supply);
-        
+
         if (_suppliesToDeliver.Count == 0)
         {
             NoSuppliesLeft?.Invoke();

@@ -1,10 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class CollectorSpawner : MonoBehaviour
 {
-    [SerializeField] private List<Transform> _spawnPoints;
+    // [SerializeField] private List<Transform> _spawnPoints;
+    [SerializeField] private SpawnPoint _spawnPoint;
     [SerializeField] private Storage _storage;
     [SerializeField] private Collector _collectorPrefab;
     [SerializeField] private DropOff _dropOff;
@@ -12,8 +13,11 @@ public class CollectorSpawner : MonoBehaviour
     [SerializeField] private float _delay;
 
     private Coroutine _spawnCollectorsRoutine;
+
     private SupplyBox _targetSupplyBox;
-    private Transform _spawnPoint;
+
+    // private Transform _spawnPoint;
+    private float _offsetZ;
     private int _amountOfCollectorsToSpawn = 3;
     private int _indexOfCollectors = 0;
 
@@ -29,7 +33,7 @@ public class CollectorSpawner : MonoBehaviour
 
     public void StartSpawnCollectors()
     {
-        _spawnCollectorsRoutine = StartCoroutine(SpawnCollectors()); 
+        _spawnCollectorsRoutine = StartCoroutine(SpawnCollectors());
     }
 
     public SupplyBox RequestToAssignTask()
@@ -44,6 +48,37 @@ public class CollectorSpawner : MonoBehaviour
         return null;
     }
 
+    public void ExpansionCollectorsAmount()
+    {
+        _amountOfCollectorsToSpawn++;
+
+        if (_spawnCollectorsRoutine != null)
+        {
+            StopCoroutine(_spawnCollectorsRoutine);
+        }
+
+        _spawnCollectorsRoutine = StartCoroutine(SpawnCollectors());
+    }
+
+    private SpawnPoint GetSpawnPoint()
+    {
+        float stepBetweenSpawnPoints = -5;
+        
+        if (_offsetZ == 0)
+        {
+            _offsetZ += stepBetweenSpawnPoints;
+            return _spawnPoint;
+        }
+        else
+        {
+            SpawnPoint newSpawnPoint = Instantiate(_spawnPoint, _spawnPoint.transform.position, _spawnPoint.transform.rotation);
+            newSpawnPoint.transform.Translate(0f, 0f, _offsetZ);
+            _offsetZ += stepBetweenSpawnPoints;
+
+            return newSpawnPoint;
+        }
+    }
+
     private IEnumerator SpawnCollectors()
     {
         WaitForSeconds wait = new WaitForSeconds(_delay);
@@ -52,16 +87,17 @@ public class CollectorSpawner : MonoBehaviour
         {
             yield return wait;
 
-            if (_indexOfCollectors < _amountOfCollectorsToSpawn ) 
+            if (_indexOfCollectors < _amountOfCollectorsToSpawn)
             {
                 _targetSupplyBox = RequestToAssignTask();
 
                 if (_targetSupplyBox != null)
                 {
-                    Collector collector = Spawn(_spawnPoints[_indexOfCollectors]);
+                    SpawnPoint spawnPoint = GetSpawnPoint();
+                    Collector collector = Spawn(spawnPoint);
                     collector.RecieveTargetPosition(_targetSupplyBox);
                     collector.RecieveDropOffPosition(_dropOff);
-                    collector.RecieveSpawnPoint(_spawnPoints[_indexOfCollectors]);
+                    collector.RecieveSpawnPoint(spawnPoint);
                     SendToWork(collector);
                     _indexOfCollectors++;
                 }
@@ -78,8 +114,8 @@ public class CollectorSpawner : MonoBehaviour
         collector.Init();
     }
 
-    private Collector Spawn(Transform spawnPoint)
+    private Collector Spawn(SpawnPoint spawnPoint)
     {
-        return Instantiate(_collectorPrefab, spawnPoint.position, Quaternion.identity);
+        return Instantiate(_collectorPrefab, spawnPoint.transform.position, Quaternion.identity);
     }
 }

@@ -47,16 +47,14 @@ public class Collector : MonoBehaviour
     {
         MarkAsFree();
         StopCoroutine(_moveRoutine);
+        // Debug.Log(_spawnPoint.transform.position);
         transform.position = _spawnPoint.transform.position;
         transform.LookAt(_spawnPoint.transform.position);
     }
 
     public void RecieveTargetPosition(SupplyBox target)
     {
-        if (TargetSupplyBox != null)
-        {
-            TargetSupplyBox = null;
-        }
+        if (TargetSupplyBox != null) TargetSupplyBox = null;
 
         TargetSupplyBox = target;
     }
@@ -71,9 +69,11 @@ public class Collector : MonoBehaviour
         _dropPoint = dropPoint;
     }
 
-    public void RecieveSpawnPoint(Transform spawnPoint)
+    public void RecieveSpawnPoint(SpawnPoint spawnPoint)
     {
-        _spawnPoint = spawnPoint;
+        // Debug.Log("мы тут");
+        _spawnPoint = spawnPoint.transform;
+        // Debug.Log(_spawnPoint.transform.position);
     }
 
     private void MarkAsFree()
