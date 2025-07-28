@@ -5,9 +5,13 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(BoxCollider))]
 public class SupplySpawner : Spawner<SupplyBox>
 {
-    [SerializeField] private CollisionHandler _collisionHandler;
+    // [SerializeField] private CollisionHandler collisionHandler;
+    [Header("Links")]
     [SerializeField] private SupplyBox _supplyBoxPrefab;
+    [SerializeField] private DataBase _dataBase;
     [SerializeField] private Storage _storage;
+    
+    [Header("Coordinates")]
     [SerializeField] private float minStartPointX;
     [SerializeField] private float maxStartPointX;
     [SerializeField] private float minStartPointZ;
@@ -21,7 +25,7 @@ public class SupplySpawner : Spawner<SupplyBox>
 
     private void OnEnable()
     {
-        _storage.NoSuppliesLeft += StartSpawnSupply;
+        _dataBase.NoSuppliesLeft += StartSpawnSupply;
     }
 
     private void Start()
@@ -31,7 +35,7 @@ public class SupplySpawner : Spawner<SupplyBox>
 
     private void OnDisable()
     {
-        _storage.NoSuppliesLeft -= StartSpawnSupply;
+        _dataBase.NoSuppliesLeft -= StartSpawnSupply;
     }
 
     private void StartSpawnSupply()

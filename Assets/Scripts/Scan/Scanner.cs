@@ -7,6 +7,7 @@ public class Scanner : MonoBehaviour
 {
     [SerializeField] private Storage _storage;
     [SerializeField] private float _scanRadius;
+    [SerializeField] private DataBase _dataBase;
 
     private static int _supplyPlacementInLayers = 3;
 
@@ -19,20 +20,15 @@ public class Scanner : MonoBehaviour
 
     private void OnEnable()
     {
-        _storage.NoSuppliesLeft += StartScan;
-    }
-    
-    private void Start()
-    {
-        StartScan();
+        _dataBase.NoSuppliesLeft += StartScan;
     }
 
     private void OnDisable()
     {
-        _storage.NoSuppliesLeft -= StartScan;
+        _dataBase.NoSuppliesLeft -= StartScan;
     }
 
-    private void StartScan()
+    public void StartScan()
     {
         _scanRoutine = StartCoroutine(ScanWithRate());
     }
@@ -50,7 +46,7 @@ public class Scanner : MonoBehaviour
 
         if (toCollect.Count > 0)
         {
-            _storage.GetSuppliesToCollect(toCollect);
+            _dataBase.GetSuppliesToCollect(toCollect);
             SuppliesFounded?.Invoke();
             StopCoroutine(_scanRoutine);
         }

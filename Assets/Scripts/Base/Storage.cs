@@ -7,19 +7,12 @@ public class Storage : MonoBehaviour
     [SerializeField] private CollectorSpawner _collectorSpawner;
     [SerializeField] private ScoreCounter _scoreCounter;
     [SerializeField] private Base _base;
-
-    private Queue<SupplyBox> _suppliesToCollect;
-    private List<SupplyBox> _suppliesToDeliver;
-    public int AmountOfSuppliesToCollect => _suppliesToCollect.Count;
+    [SerializeField] private DataBase _dataBase;
 
     public Action<SupplyBox> Delivered;
     public Action NoSuppliesLeft;
-
-    private void Awake()
-    {
-        _suppliesToCollect = new Queue<SupplyBox>();
-        _suppliesToDeliver = new List<SupplyBox>();
-    }
+    // public Action NoSuppliesLeft;
+    public Action PriorityChanged;
 
     private void OnEnable()
     {
@@ -35,10 +28,10 @@ public class Storage : MonoBehaviour
     {
         SupplyBox task;
 
-        if (_suppliesToCollect.Count != 0)
+        if (_dataBase.SuppliesToCollect.Count != 0)
         {
-            task = _suppliesToCollect.Dequeue();
-            _suppliesToDeliver.Add(task);
+            task = _dataBase.SuppliesToCollect.Dequeue();
+            _dataBase.SuppliesToDeliver.Add(task);
         }
         else
         {
@@ -48,21 +41,10 @@ public class Storage : MonoBehaviour
         return task;
     }
 
-    public void GetSuppliesToCollect(Queue<SupplyBox> suppliesToCollect)
-    {
-        foreach (SupplyBox supply in suppliesToCollect)
-        {
-            if (!_suppliesToCollect.Contains(supply) && !_suppliesToDeliver.Contains(supply))
-            {
-                _suppliesToCollect.Enqueue(supply);
-            }
-        }
-    }
-
     public void SupplyDelivered(SupplyBox supply)
     {
         Delivered?.Invoke(supply);
-        RemoveSuppliesFromCollection(supply);
+        _dataBase.RemoveSuppliesFromCollection(supply);
         _scoreCounter.Add();
     }
 
@@ -79,5 +61,9 @@ public class Storage : MonoBehaviour
         {
             NoSuppliesLeft?.Invoke();
         }
+    private void SetPriorityToBuildBase()
+    {
+        _base.SendBotToBuildBase();
+        PriorityChanged?.Invoke();
     }
 }

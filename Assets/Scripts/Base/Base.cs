@@ -8,6 +8,8 @@ public class Base : MonoBehaviour
     [SerializeField] private CollisionHandler _collisionHandler;
     [SerializeField] private Storage _storage;
     [SerializeField] private Scanner _scanner;
+    [SerializeField] private FlagPlacer _flagPlacer;
+    [SerializeField] private DataBase _dataBase;
 
     private List<Collector> _busyCollectors;
     private List<Collector> _freeCollectors;
@@ -29,12 +31,29 @@ public class Base : MonoBehaviour
     private void Start()
     {
         SpawnCollectors();
+        _scanner.StartScan();
     }
 
     private void OnDisable()
     {
         _scanner.SuppliesFounded -= AssignCollector;
-        _collisionHandler.CollectorReturned -= SetFreeFromTask;
+        collisionHandler.CollectorReached -= SetFreeFromTask;
+    }
+
+    public void AddCollector(Collector collector)
+    {
+        _freeCollectors.Add(collector);
+    }
+
+    public void SendBotToBuildBase()
+    {
+        if (_freeCollectors.Count > 0)
+        {
+            Collector collector = _freeCollectors[Random.Range(0, _freeCollectors.Count)];
+            
+            collector.SetTargetToFlag(_flagPlacer.Flag.transform.position);
+            _freeCollectors.Remove(collector);
+        }
     }
 
     private void SpawnCollectors()
@@ -50,7 +69,7 @@ public class Base : MonoBehaviour
         collector.ResetToSpawnPoint();
         _freeCollectors.Add(collector);
 
-        if (_freeCollectors.Count != 0 && _storage.AmountOfSuppliesToCollect > 0)
+        if (_freeCollectors.Count != 0 && _dataBase.SuppliesToCollect.Count > 0)
         {
             AssignCollector();
         }
