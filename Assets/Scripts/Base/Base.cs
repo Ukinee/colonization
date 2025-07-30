@@ -43,6 +43,11 @@ public class Base : MonoBehaviour
     public void AddCollector(Collector collector)
     {
         _freeCollectors.Add(collector);
+
+        foreach (var collector1 in _freeCollectors)
+        {
+            Debug.Log(collector1.name);
+        }
     }
 
     public void SendBotToBuildBase()

@@ -4,8 +4,8 @@ using System;
 
 public class DataBase : MonoBehaviour
 {
-    public List<SupplyBox> SuppliesToDeliver { get; private set; }
     public Queue<SupplyBox> SuppliesToCollect { get; private set; }
+    public List<SupplyBox> SuppliesToDeliver { get; private set; }
 
     public Action NoSuppliesLeft;
 
@@ -29,7 +29,6 @@ public class DataBase : MonoBehaviour
     public void RemoveSuppliesFromCollection(SupplyBox supply)
     {
         SuppliesToDeliver.Remove(supply);
-        Debug.Log("бот удален из коллекции базы данных");
 
         if (SuppliesToDeliver.Count == 0)
         {

@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
-    [SerializeField] private Storage _storage;
+    [Header("Settings")]
     [SerializeField] private float _scanRadius;
+    [Header("Links")]
     [SerializeField] private DataBase _dataBase;
 
     private static int _supplyPlacementInLayers = 3;
@@ -63,5 +64,10 @@ public class Scanner : MonoBehaviour
 
             _collectableSupply = ScanForSupplies();
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, _scanRadius);
     }
 }

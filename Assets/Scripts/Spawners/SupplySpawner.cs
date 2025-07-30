@@ -5,7 +5,6 @@ using Random = UnityEngine.Random;
 [RequireComponent(typeof(BoxCollider))]
 public class SupplySpawner : Spawner<SupplyBox>
 {
-    // [SerializeField] private CollisionHandler collisionHandler;
     [Header("Links")]
     [SerializeField] private SupplyBox _supplyBoxPrefab;
     [SerializeField] private DataBase _dataBase;
