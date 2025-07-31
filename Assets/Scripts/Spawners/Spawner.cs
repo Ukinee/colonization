@@ -3,6 +3,7 @@ using UnityEngine.Pool;
 
 public class Spawner<T> : MonoBehaviour where T : MonoBehaviour
 {
+    [Header("Pool settings")]
     [SerializeField] private T _prefabObject;
     [SerializeField] private int _poolCapacity;
     [SerializeField] private int _poolMaxSize;

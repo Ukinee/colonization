@@ -4,16 +4,16 @@ using Debug = UnityEngine.Debug;
 
 public class CollectorSpawner : MonoBehaviour
 {
-    // [SerializeField] private List<Transform> _spawnPoints;
-    [SerializeField] private SpawnPoint _spawnPoint;
+    [Header("Links")] [SerializeField] private SpawnPoint _spawnPoint;
     [SerializeField] private Storage _storage;
     [SerializeField] private Collector _collectorPrefab;
     [SerializeField] private DropOff _dropOff;
     [SerializeField] private Base _base;
+    [SerializeField] private BaseFactory _baseFactory;
+    [Header("Values")] 
     [SerializeField] private float _delay;
 
     private Coroutine _spawnCollectorsRoutine;
-
     private SupplyBox _targetSupplyBox;
 
     // private Transform _spawnPoint;
@@ -60,10 +60,15 @@ public class CollectorSpawner : MonoBehaviour
         _spawnCollectorsRoutine = StartCoroutine(SpawnCollectors());
     }
 
+    public void Init(BaseFactory factory)
+    {
+        _baseFactory = factory;
+    }
+
     private SpawnPoint GetSpawnPoint()
     {
         float stepBetweenSpawnPoints = -5;
-        
+
         if (_offsetZ == 0)
         {
             _offsetZ += stepBetweenSpawnPoints;
@@ -71,7 +76,8 @@ public class CollectorSpawner : MonoBehaviour
         }
         else
         {
-            SpawnPoint newSpawnPoint = Instantiate(_spawnPoint, _spawnPoint.transform.position, _spawnPoint.transform.rotation);
+            SpawnPoint newSpawnPoint =
+                Instantiate(_spawnPoint, _spawnPoint.transform.position, _spawnPoint.transform.rotation);
             newSpawnPoint.transform.Translate(0f, 0f, _offsetZ);
             _offsetZ += stepBetweenSpawnPoints;
 
@@ -98,6 +104,7 @@ public class CollectorSpawner : MonoBehaviour
                     collector.RecieveTargetPosition(_targetSupplyBox);
                     collector.RecieveDropOffPosition(_dropOff);
                     collector.RecieveSpawnPoint(spawnPoint);
+                    collector.RecieveBaseFactory(_baseFactory);
                     SendToWork(collector);
                     _indexOfCollectors++;
                 }

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[RequireComponent(typeof(DataBase))]
+
 public class DataBase : MonoBehaviour
 {
     public Queue<SupplyBox> SuppliesToCollect { get; private set; }

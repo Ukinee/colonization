@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class Collector : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 4;
+    [SerializeField] private float _moveSpeed = 10;
 
     private Coroutine _moveRoutine;
+    private BaseFactory _baseFactory;
     private Transform _spawnPoint;
     private DropOff _dropPoint;
     private Vector3 _currentTarget;
@@ -13,7 +14,7 @@ public class Collector : MonoBehaviour
     private bool _isBusy;
 
     public SupplyBox TargetSupplyBox { get; private set; }
-    public bool IsBusy { get; private set; } 
+    public bool IsBusy { get; private set; }
 
     private void Awake()
     {
@@ -52,6 +53,11 @@ public class Collector : MonoBehaviour
         transform.LookAt(_spawnPoint.transform.position);
     }
 
+    public void RecieveBaseFactory(BaseFactory factory)
+    {
+        _baseFactory = factory;
+    }
+
     public void RecieveTargetPosition(SupplyBox target)
     {
         if (TargetSupplyBox != null) TargetSupplyBox = null;
@@ -73,7 +79,15 @@ public class Collector : MonoBehaviour
     {
         // Debug.Log("мы тут");
         _spawnPoint = spawnPoint.transform;
-        // Debug.Log(_spawnPoint.transform.position);
+    }
+
+    public void SetTargetToFlag(Vector3 flagPosition)
+    {
+        _currentTarget = flagPosition;
+        TargetSupplyBox = null;
+
+        transform.LookAt(_currentTarget);
+        MoveTo(_currentTarget);
     }
 
     private void MarkAsFree()
@@ -120,6 +134,15 @@ public class Collector : MonoBehaviour
                 transform.LookAt(_dropPoint.transform.position);
                 MoveTo(_dropPoint.transform.position);
             }
+        }
+    }
+
+    private void TryReachFlag()
+    {
+        if (Vector3.Distance(transform.position, _currentTarget) <= _distanceToInteract)
+        {
+            _baseFactory.CreateBase(this);
+            ResetToSpawnPoint();
         }
     }
 }

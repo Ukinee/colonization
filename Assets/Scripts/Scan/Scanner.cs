@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
-    [Header("Settings")]
-    [SerializeField] private float _scanRadius;
     [Header("Links")]
     [SerializeField] private DataBase _dataBase;
+    [Header("Settings")]
+    [SerializeField] private float _scanRadius;
 
     private static int _supplyPlacementInLayers = 3;
 

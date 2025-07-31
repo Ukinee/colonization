@@ -1,26 +1,31 @@
+using System;
 using UnityEngine;
 
 public class Flag : MonoBehaviour
 {
-    [SerializeField] private Base _basePrefab;
     [SerializeField] private CollisionHandler _collisionHandler;
+    [SerializeField] private Base _basePrefab;
 
     private Base _base;
 
+    public Action<Collector> OnBaseFactory;
+
     private void OnEnable()
     {
-        _collisionHandler.CollectorReached += SpawnBase;
+        _collisionHandler.CollectorReached += Destroy;
     }
 
     private void OnDisable()
     {
-        _collisionHandler.CollectorReached -= SpawnBase;
+        _collisionHandler.CollectorReached -= Destroy;
     }
 
-    private void SpawnBase(Collector collector)
+    private void Destroy(Collector collector)
     {
-        _base = Instantiate(_basePrefab, collector.transform.position, Quaternion.identity);
-        _base.AddCollector(collector);
+        // _base = Instantiate(_basePrefab, collector.transform.position, Quaternion.identity);
+        // _baseFactory.CreateBase(collector);
+        // OnBaseFactory?.Invoke(collector);
+        
         Destroy(this);
     }
 }

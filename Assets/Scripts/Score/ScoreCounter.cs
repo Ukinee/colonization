@@ -3,11 +3,10 @@ using UnityEngine;
 
 public class ScoreCounter : MonoBehaviour
 {
-   private int _score;
-   private int _resourcesForNewCollector = 3;
-   
-   public Action<int> ScoreChanged;
-   public Action RequirementReached;
+    [SerializeField] private FlagPlacer _flagPlacer;
+    
+    private int _resourcesForNewCollector = 3;
+    private int _resourcesForNewBase = 5;
 
    public void Add()
    {

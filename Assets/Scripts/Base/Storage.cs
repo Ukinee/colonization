@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Storage : MonoBehaviour
 {
     [SerializeField] private CollectorSpawner _collectorSpawner;
     [SerializeField] private ScoreCounter _scoreCounter;
-    [SerializeField] private Base _base;
     [SerializeField] private DataBase _dataBase;
+    [SerializeField] private Base _base;
 
     public Action<SupplyBox> Delivered;
     public Action NoSuppliesLeft;
