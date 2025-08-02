@@ -183,10 +183,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d57d3e21a7a33564b8228aae85786c02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnPoint: {fileID: 2267752919633552205}
-  _storage: {fileID: 2286565525516428585}
+  _baseFactory: {fileID: 0}
   _collectorPrefab: {fileID: -7090063755705864622, guid: c72600c709a7991479519583e5a8b1c6, type: 3}
-  _dropOff: {fileID: 1581912966704649053}
+  _storage: {fileID: 2286565525516428585}
   _base: {fileID: 5906924824280230164}
   _delay: 2
 --- !u!114 &5906924824280230164
@@ -203,10 +202,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collectorSpawner: {fileID: 8177649278281525753}
   collisionHandler: {fileID: 5186439743223289564}
-  _storage: {fileID: 2286565525516428585}
-  _scanner: {fileID: 0}
   _flagPlacer: {fileID: 1977037847033995021}
   _dataBase: {fileID: 0}
+  _scanner: {fileID: 0}
+  _storage: {fileID: 2286565525516428585}
+  _spawnPoint: {fileID: 2267752919633552205}
+  _dropOff: {fileID: 1581912966704649053}
 --- !u!114 &2286565525516428585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +223,6 @@ MonoBehaviour:
   _collectorSpawner: {fileID: 8177649278281525753}
   _scoreCounter: {fileID: 7374343539667574364}
   _base: {fileID: 5906924824280230164}
-  _dataBase: {fileID: 0}
 --- !u!114 &7374343539667574364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 7466528878111819901}
   - component: {fileID: 2267752919633552205}
   m_Layer: 0
-  m_Name: spawnPoint 1
+  m_Name: Spawn Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 4856606936370727401}
   - component: {fileID: 5186439743223289564}
   m_Layer: 0
-  m_Name: drop off
+  m_Name: Drop Off
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

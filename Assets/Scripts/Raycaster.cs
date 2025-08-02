@@ -9,7 +9,7 @@ public class Raycaster : MonoBehaviour
     private RaycastHit _hit;
     private Camera _camera;
 
-    public Action OnBaseHitted;
+    public Action OnBaseHit;
 
     private void Awake()
     {
@@ -36,9 +36,11 @@ public class Raycaster : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f, _baseMask))
         {
-            if (hit.collider.gameObject.GetComponent<Base>() != null)
+            Base baseObject = hit.collider.GetComponent<Base>();
+            
+            if (baseObject != null)
             {
-                OnBaseHitted?.Invoke();
+                OnBaseHit?.Invoke();
             }
         }
     }

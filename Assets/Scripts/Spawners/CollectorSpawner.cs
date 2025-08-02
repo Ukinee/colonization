@@ -4,12 +4,11 @@ using Debug = UnityEngine.Debug;
 
 public class CollectorSpawner : MonoBehaviour
 {
-    [Header("Links")] [SerializeField] private SpawnPoint _spawnPoint;
-    [SerializeField] private Storage _storage;
-    [SerializeField] private Collector _collectorPrefab;
-    [SerializeField] private DropOff _dropOff;
-    [SerializeField] private Base _base;
+    [Header("Links")] 
     [SerializeField] private BaseFactory _baseFactory;
+    [SerializeField] private Collector _collectorPrefab;
+    [SerializeField] private Storage _storage;
+    [SerializeField] private Base _base;
     [Header("Values")] 
     [SerializeField] private float _delay;
 
@@ -38,7 +37,7 @@ public class CollectorSpawner : MonoBehaviour
 
     public SupplyBox RequestToAssignTask()
     {
-        SupplyBox supply = _storage.AssignTask();
+        SupplyBox supply = _base.AssignTask();
 
         if (supply != null)
         {
@@ -72,12 +71,12 @@ public class CollectorSpawner : MonoBehaviour
         if (_offsetZ == 0)
         {
             _offsetZ += stepBetweenSpawnPoints;
-            return _spawnPoint;
+            return _base.SpawnPoint;
         }
         else
         {
-            SpawnPoint newSpawnPoint =
-                Instantiate(_spawnPoint, _spawnPoint.transform.position, _spawnPoint.transform.rotation);
+            SpawnPoint newSpawnPoint = Instantiate(_base.SpawnPoint, _base.SpawnPoint.transform.position,
+                _base.SpawnPoint.transform.rotation);
             newSpawnPoint.transform.Translate(0f, 0f, _offsetZ);
             _offsetZ += stepBetweenSpawnPoints;
 
@@ -102,7 +101,7 @@ public class CollectorSpawner : MonoBehaviour
                     SpawnPoint spawnPoint = GetSpawnPoint();
                     Collector collector = Spawn(spawnPoint);
                     collector.RecieveTargetPosition(_targetSupplyBox);
-                    collector.RecieveDropOffPosition(_dropOff);
+                    collector.RecieveDropOffPosition(_base.DropOff);
                     collector.RecieveSpawnPoint(spawnPoint);
                     collector.RecieveBaseFactory(_baseFactory);
                     SendToWork(collector);

@@ -43,6 +43,7 @@ public class SupplySpawner : Spawner<SupplyBox>
         {
             StopCoroutine(_supplySpawnRoutine);
             _spawns = 0;
+            _maxSpawns++;
         }
 
         _supplySpawnRoutine = StartCoroutine(SpawnSupply());
