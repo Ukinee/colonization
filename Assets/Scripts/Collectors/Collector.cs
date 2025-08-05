@@ -12,6 +12,7 @@ public class Collector : MonoBehaviour
     private Vector3 _currentTarget;
     private float _distanceToInteract = 4f;
     private bool _isBusy;
+    private bool IsFlagDestination = false;
 
     public SupplyBox TargetSupplyBox { get; private set; }
     public bool IsBusy { get; private set; }
@@ -26,6 +27,11 @@ public class Collector : MonoBehaviour
         if (TargetSupplyBox != null && _moveRoutine != null && !TargetSupplyBox.Rigidbody.isKinematic)
         {
             TryToPickUp();
+        }
+
+        if (IsFlagDestination)
+        {
+            TryToReachFlag();
         }
     }
 
@@ -77,7 +83,6 @@ public class Collector : MonoBehaviour
 
     public void RecieveSpawnPoint(SpawnPoint spawnPoint)
     {
-        // Debug.Log("мы тут");
         _spawnPoint = spawnPoint.transform;
     }
 
@@ -85,6 +90,7 @@ public class Collector : MonoBehaviour
     {
         _currentTarget = flagPosition;
         TargetSupplyBox = null;
+        IsFlagDestination = true;
 
         transform.LookAt(_currentTarget);
         MoveTo(_currentTarget);
@@ -93,6 +99,7 @@ public class Collector : MonoBehaviour
     private void MarkAsFree()
     {
         _isBusy = false;
+        IsFlagDestination = false;
     }
 
     private void MoveTo(Vector3 targetPosition)
@@ -137,7 +144,7 @@ public class Collector : MonoBehaviour
         }
     }
 
-    private void TryReachFlag()
+    private void TryToReachFlag()
     {
         if (Vector3.Distance(transform.position, _currentTarget) <= _distanceToInteract)
         {

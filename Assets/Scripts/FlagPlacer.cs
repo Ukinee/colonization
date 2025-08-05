@@ -3,16 +3,20 @@ using UnityEngine;
 public class FlagPlacer : MonoBehaviour
 {
     [SerializeField] private InputReader _input;
-    [SerializeField] private GameObject _flag;
+    [SerializeField] private Flag _flagPrefab;
     [SerializeField] private Raycaster _raycaster;
+    [SerializeField] private Storage _storage;
 
-    private GameObject _pendingObject;
+    private Flag _pendingObject;
     private Vector3 _pos;
+
+    public Flag Flag { get; private set; } = null;
+    public bool IsFlagSet { get; private set; } = false;
 
     private void OnEnable()
     {
         _raycaster.OnBaseHit += SetFlag;
-        _storage.PriorityChanged += ChangeState;
+        // _storage.PriorityChanged += ChangeState;
     }
 
     private void Update()
@@ -32,7 +36,7 @@ public class FlagPlacer : MonoBehaviour
     private void OnDisable()
     {
         _raycaster.OnBaseHit -= SetFlag;
-        _storage.PriorityChanged -= ChangeState;
+        // _storage.PriorityChanged -= ChangeState;
     }
 
     private void UpdatePendingObjectPosition()
@@ -49,6 +53,8 @@ public class FlagPlacer : MonoBehaviour
         if (_input.LeftMouseButtonDown)
         {
             _pendingObject = null;
+            IsFlagSet = true;
+            Debug.Log(IsFlagSet);
         }
     }
 
@@ -56,6 +62,13 @@ public class FlagPlacer : MonoBehaviour
     {
         if (_pendingObject == null)
         {
+            if (Flag != null)
+            {
+                Destroy(Flag.gameObject);
+                Flag = null;
+                IsFlagSet = false;
+            }
+
             CreateFlag();
         }
     }

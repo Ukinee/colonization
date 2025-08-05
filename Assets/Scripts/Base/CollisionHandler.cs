@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
 {
-    public Action<Collector> CollectorReturned;
+    public Action<Collector> CollectorReached;
 
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.TryGetComponent(out Collector collector))
         {
-            CollectorReturned?.Invoke(collector);
+            CollectorReached?.Invoke(collector);
         }
     }
 }

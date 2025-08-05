@@ -71,6 +71,7 @@ public class CollectorSpawner : MonoBehaviour
         if (_offsetZ == 0)
         {
             _offsetZ += stepBetweenSpawnPoints;
+            
             return _base.SpawnPoint;
         }
         else

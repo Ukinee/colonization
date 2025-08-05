@@ -20,12 +20,11 @@ public class Flag : MonoBehaviour
         _collisionHandler.CollectorReached -= Destroy;
     }
 
-    private void Destroy(Collector collector)
+    public void Destroy()
     {
         // _base = Instantiate(_basePrefab, collector.transform.position, Quaternion.identity);
         // _baseFactory.CreateBase(collector);
         // OnBaseFactory?.Invoke(collector);
-        
         Destroy(this);
     }
 }

@@ -201,12 +201,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collectorSpawner: {fileID: 8177649278281525753}
-  collisionHandler: {fileID: 5186439743223289564}
+  _collisionHandler: {fileID: 5186439743223289564}
   _flagPlacer: {fileID: 1977037847033995021}
-  _dataBase: {fileID: 0}
-  _scanner: {fileID: 0}
-  _storage: {fileID: 2286565525516428585}
   _spawnPoint: {fileID: 2267752919633552205}
+  _dataBase: {fileID: 0}
+  _storage: {fileID: 2286565525516428585}
+  _scanner: {fileID: 0}
   _dropOff: {fileID: 1581912966704649053}
 --- !u!114 &2286565525516428585
 MonoBehaviour:
@@ -222,6 +222,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collectorSpawner: {fileID: 8177649278281525753}
   _scoreCounter: {fileID: 7374343539667574364}
+  _flagPlacer: {fileID: 1977037847033995021}
+  _dataBase: {fileID: 0}
   _base: {fileID: 5906924824280230164}
 --- !u!114 &7374343539667574364
 MonoBehaviour:
@@ -270,7 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 5803890307559868662}
-  _flagPrefab: {fileID: 8977862130751104484, guid: aa520ced336f7fb449fe906eb79f5094, type: 3}
+  _flagPrefab: {fileID: -101526504063985159, guid: aa520ced336f7fb449fe906eb79f5094, type: 3}
   _raycaster: {fileID: 7219734072597807327}
   _storage: {fileID: 2286565525516428585}
 --- !u!114 &5803890307559868662

@@ -5,18 +5,19 @@ public class ScoreCounter : MonoBehaviour
 {
     [SerializeField] private FlagPlacer _flagPlacer;
     
-    private int _resourcesForNewCollector = 3;
-    private int _resourcesForNewBase = 5;
+    public int Score { get; private set; }
+
+    public Action RequirementReached;
+    public Action<int> ScoreChanged;
 
    public void Add()
    {
-      _score++;
-      ScoreChanged?.Invoke(_score);
+      Score++;
+      ScoreChanged?.Invoke(Score);
+   }
 
-      if (_score == _resourcesForNewCollector)
-      {
-         RequirementReached?.Invoke();
-         _score -= _resourcesForNewCollector;
-      }
+   public void SpendScore(int value)
+   {
+       Score -= value;
    }
 }
