@@ -14,7 +14,7 @@ public class Collector : MonoBehaviour
     private bool _isBusy;
     private bool IsFlagDestination = false;
 
-    public SupplyBox TargetSupplyBox { get; private set; }
+    [field: SerializeField] public SupplyBox TargetSupplyBox { get; private set; }
     public bool IsBusy { get; private set; }
 
     private void Awake()
@@ -54,7 +54,6 @@ public class Collector : MonoBehaviour
     {
         MarkAsFree();
         StopCoroutine(_moveRoutine);
-        // Debug.Log(_spawnPoint.transform.position);
         transform.position = _spawnPoint.transform.position;
         transform.LookAt(_spawnPoint.transform.position);
     }

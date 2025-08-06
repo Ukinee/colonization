@@ -9,6 +9,7 @@ public class CollisionHandler : MonoBehaviour
     {
         if (collision.TryGetComponent(out Collector collector))
         {
+            // Debug.Log(collector.TargetSupplyBox.name);
             CollectorReached?.Invoke(collector);
         }
     }

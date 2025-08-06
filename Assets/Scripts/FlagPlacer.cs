@@ -16,7 +16,6 @@ public class FlagPlacer : MonoBehaviour
     private void OnEnable()
     {
         _raycaster.OnBaseHit += SetFlag;
-        // _storage.PriorityChanged += ChangeState;
     }
 
     private void Update()
@@ -36,7 +35,6 @@ public class FlagPlacer : MonoBehaviour
     private void OnDisable()
     {
         _raycaster.OnBaseHit -= SetFlag;
-        // _storage.PriorityChanged -= ChangeState;
     }
 
     private void UpdatePendingObjectPosition()
@@ -54,7 +52,6 @@ public class FlagPlacer : MonoBehaviour
         {
             _pendingObject = null;
             IsFlagSet = true;
-            Debug.Log(IsFlagSet);
         }
     }
 
@@ -77,6 +74,5 @@ public class FlagPlacer : MonoBehaviour
     {
         Flag = Instantiate(_flagPrefab, _pos, transform.rotation);
         _pendingObject = Flag;
-        // OnFlagSet?.Invoke(Flag);
     }
 }

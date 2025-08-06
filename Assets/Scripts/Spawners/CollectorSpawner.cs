@@ -8,14 +8,13 @@ public class CollectorSpawner : MonoBehaviour
     [SerializeField] private BaseFactory _baseFactory;
     [SerializeField] private Collector _collectorPrefab;
     [SerializeField] private Storage _storage;
-    [SerializeField] private Base _base;
+    // [SerializeField] private Base _base;
     [Header("Values")] 
     [SerializeField] private float _delay;
 
     private Coroutine _spawnCollectorsRoutine;
     private SupplyBox _targetSupplyBox;
 
-    // private Transform _spawnPoint;
     private float _offsetZ;
     private int _amountOfCollectorsToSpawn = 3;
     private int _indexOfCollectors = 0;
@@ -35,7 +34,7 @@ public class CollectorSpawner : MonoBehaviour
         _spawnCollectorsRoutine = StartCoroutine(SpawnCollectors());
     }
 
-    public SupplyBox RequestToAssignTask()
+    public SupplyBox RequestToAssignTask() // into base
     {
         SupplyBox supply = _base.AssignTask();
 
@@ -59,12 +58,12 @@ public class CollectorSpawner : MonoBehaviour
         _spawnCollectorsRoutine = StartCoroutine(SpawnCollectors());
     }
 
-    public void Init(BaseFactory factory)
-    {
-        _baseFactory = factory;
-    }
+    // public void Init(BaseFactory factory)
+    // {
+    //     _baseFactory = factory;
+    // }
 
-    private SpawnPoint GetSpawnPoint()
+    private SpawnPoint GetSpawnPoint() // into base
     {
         float stepBetweenSpawnPoints = -5;
 
@@ -85,7 +84,7 @@ public class CollectorSpawner : MonoBehaviour
         }
     }
 
-    private IEnumerator SpawnCollectors()
+    private IEnumerator SpawnCollectors() // rework without coroutine
     {
         WaitForSeconds wait = new WaitForSeconds(_delay);
 
@@ -116,7 +115,7 @@ public class CollectorSpawner : MonoBehaviour
         }
     }
 
-    private void SendToWork(Collector collector)
+    private void SendToWork(Collector collector) // into base
     {
         collector.Init();
     }

@@ -30,9 +30,11 @@ public class DataBase : MonoBehaviour
 
     public void RemoveSuppliesFromCollection(SupplyBox supply)
     {
+        Debug.Log("deleted from collection");
+        
         SuppliesToDeliver.Remove(supply);
 
-        if (SuppliesToDeliver.Count == 0)
+        if (SuppliesToDeliver.Count == 0 && SuppliesToCollect.Count == 0)
         {
             NoSuppliesLeft?.Invoke();
         }

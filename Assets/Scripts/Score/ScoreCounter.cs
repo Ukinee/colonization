@@ -7,7 +7,6 @@ public class ScoreCounter : MonoBehaviour
     
     public int Score { get; private set; }
 
-    public Action RequirementReached;
     public Action<int> ScoreChanged;
 
    public void Add()

@@ -19,6 +19,7 @@ public class Base : MonoBehaviour
 
     public SpawnPoint SpawnPoint => _spawnPoint;
     public FlagPlacer FlagPlacer => _flagPlacer;
+    public DataBase DataBase => _dataBase;
     public DropOff DropOff => _dropOff;
 
     public Action<Collector> Reassigned;
@@ -31,8 +32,12 @@ public class Base : MonoBehaviour
 
     private void OnEnable()
     {
-        _scanner.SuppliesFounded += AssignCollector;
         _collisionHandler.CollectorReached += SetFreeFromTask;
+
+        if (_scanner != null)
+        {
+            _scanner.SuppliesFounded += AssignCollector;
+        }
     }
 
     private void Start()
@@ -52,10 +57,8 @@ public class Base : MonoBehaviour
         _dataBase = dataBase;
         _scanner = scanner;
 
-        if (_scanner != null)
-        {
-            _scanner.SuppliesFounded += AssignCollector;
-        }
+        _scanner.SuppliesFounded += AssignCollector;
+        // _collisionHandler.CollectorReached += SetFreeFromTask;
     }
 
     public void AddCollector(Collector collector, SpawnPoint spawnPoint, DropOff dropOff)
@@ -78,7 +81,10 @@ public class Base : MonoBehaviour
 
     private void SpawnCollectors()
     {
-        _collectorSpawner.StartSpawnCollectors();
+        if (_freeCollectors.Count == 0)
+        {
+            _collectorSpawner.StartSpawnCollectors();
+        }
     }
 
     public SupplyBox AssignTask()
@@ -100,6 +106,7 @@ public class Base : MonoBehaviour
 
     private void SetFreeFromTask(Collector collector)
     {
+        Debug.Log($"collectorID: {collector.gameObject.GetHashCode()} baseID: {gameObject.GetHashCode()}");
         _storage.SupplyDelivered(collector.TargetSupplyBox);
         collector.TargetSupplyBox.Destroy();
         collector.FreeFromTask();
