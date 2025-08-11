@@ -53,7 +53,12 @@ public class Collector : MonoBehaviour
     public void ResetToSpawnPoint()
     {
         MarkAsFree();
-        StopCoroutine(_moveRoutine);
+
+        if (_moveRoutine != null)
+        {
+            StopCoroutine(_moveRoutine);
+        }
+
         transform.position = _spawnPoint.transform.position;
         transform.LookAt(_spawnPoint.transform.position);
     }
@@ -65,9 +70,8 @@ public class Collector : MonoBehaviour
 
     public void RecieveTargetPosition(SupplyBox target)
     {
-        if (TargetSupplyBox != null) TargetSupplyBox = null;
-
         TargetSupplyBox = target;
+        transform.LookAt(target.transform.position);
     }
 
     public void FreeFromTask()
@@ -87,6 +91,7 @@ public class Collector : MonoBehaviour
 
     public void SetTargetToFlag(Vector3 flagPosition)
     {
+        Debug.Log("flag set as target");
         _currentTarget = flagPosition;
         TargetSupplyBox = null;
         IsFlagDestination = true;

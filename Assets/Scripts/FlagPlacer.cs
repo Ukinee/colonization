@@ -3,9 +3,10 @@ using UnityEngine;
 public class FlagPlacer : MonoBehaviour
 {
     [SerializeField] private InputReader _input;
-    [SerializeField] private Flag _flagPrefab;
     [SerializeField] private Raycaster _raycaster;
     [SerializeField] private Storage _storage;
+    [SerializeField] private Flag _flagPrefab;
+    [SerializeField] private CollisionHandler _collisionHandler;
 
     private Flag _pendingObject;
     private Vector3 _pos;
@@ -74,5 +75,10 @@ public class FlagPlacer : MonoBehaviour
     {
         Flag = Instantiate(_flagPrefab, _pos, transform.rotation);
         _pendingObject = Flag;
+    }
+
+    public void UnsetFlag()
+    {
+        IsFlagSet = false;
     }
 }

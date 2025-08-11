@@ -12,11 +12,16 @@ public class Flag : MonoBehaviour
 
     private void OnEnable()
     {
-        _collisionHandler.CollectorReached += Destroy;
+        _collisionHandler.CollectorReached += RemoveFlag;
     }
 
     private void OnDisable()
     {
-        _collisionHandler.CollectorReached -= Destroy;
+        _collisionHandler.CollectorReached -= RemoveFlag;
+    }
+
+    private void RemoveFlag(Collector collector)
+    {
+        Destroy(this);
     }
 }

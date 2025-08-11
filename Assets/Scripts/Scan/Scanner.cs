@@ -14,7 +14,7 @@ public class Scanner : MonoBehaviour
 
     private Queue<SupplyBox> _collectableSupply;
     private Coroutine _scanRoutine;
-    private float _delay = 4;
+    private float _delay = 1f;
     private int _targetLayer = 1 << _supplyPlacementInLayers;
 
     public event Action SuppliesFounded;
@@ -31,7 +31,7 @@ public class Scanner : MonoBehaviour
 
     public void StartScan()
     {
-        _scanRoutine = StartCoroutine(ScanWithRate());
+        _scanRoutine = StartCoroutine(Scan());
     }
 
     private Queue<SupplyBox> ScanForSupplies()
@@ -42,7 +42,13 @@ public class Scanner : MonoBehaviour
 
         foreach (Collider supply in supplies)
         {
-            toCollect.Enqueue(supply.GetComponent<SupplyBox>());
+            // toCollect.Enqueue(supply.GetComponent<SupplyBox>());
+            SupplyBox supplyBox = supply.GetComponent<SupplyBox>();
+
+            if (supplyBox != null && !toCollect.Contains(supplyBox))
+            {
+                toCollect.Enqueue(supplyBox);
+            }
         }
 
         if (toCollect.Count > 0)
@@ -55,12 +61,11 @@ public class Scanner : MonoBehaviour
         return toCollect;
     }
 
-    private IEnumerator ScanWithRate()
+    private IEnumerator Scan()
     {
-        WaitForSeconds wait = new WaitForSeconds(_delay);
         while (enabled)
         {
-            yield return wait;
+            yield return new WaitForSeconds(_delay);
 
             _collectableSupply = ScanForSupplies();
         }

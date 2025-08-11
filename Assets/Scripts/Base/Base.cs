@@ -5,6 +5,8 @@ using Random = UnityEngine.Random;
 
 public class Base : MonoBehaviour
 {
+    private const float OffsetZ = -5;
+
     [SerializeField] private CollectorSpawner _collectorSpawner;
     [SerializeField] private CollisionHandler _collisionHandler;
     [SerializeField] private FlagPlacer _flagPlacer;
@@ -14,8 +16,10 @@ public class Base : MonoBehaviour
     [SerializeField] private Scanner _scanner;
     [SerializeField] private DropOff _dropOff;
 
-    private List<Collector> _busyCollectors;
     private List<Collector> _freeCollectors;
+    private bool _initialSpawnDone = false;
+    private int _spawnedCount = 0;
+    private int _amountOfCollectorsToSpawn = 3;
 
     public SpawnPoint SpawnPoint => _spawnPoint;
     public FlagPlacer FlagPlacer => _flagPlacer;
@@ -26,7 +30,6 @@ public class Base : MonoBehaviour
 
     private void Awake()
     {
-        _busyCollectors = new List<Collector>();
         _freeCollectors = new List<Collector>();
     }
 
@@ -42,8 +45,13 @@ public class Base : MonoBehaviour
 
     private void Start()
     {
-        SpawnCollectors();
+        _scanner.SuppliesFounded += OnFirstSuppliesFound;
         _scanner.StartScan();
+
+        if (_dataBase.SuppliesToCollect.Count > 0)
+        {
+            AssignCollector();
+        }
     }
 
     private void OnDisable()
@@ -56,9 +64,11 @@ public class Base : MonoBehaviour
     {
         _dataBase = dataBase;
         _scanner = scanner;
-
+        _initialSpawnDone = true;
+        _spawnedCount = 3;
+        _collectorSpawner.SpawnPointProvider.ChangeOffsetZ(OffsetZ);
         _scanner.SuppliesFounded += AssignCollector;
-        // _collisionHandler.CollectorReached += SetFreeFromTask;
+        _flagPlacer.UnsetFlag();
     }
 
     public void AddCollector(Collector collector, SpawnPoint spawnPoint, DropOff dropOff)
@@ -76,37 +86,44 @@ public class Base : MonoBehaviour
 
             collector.SetTargetToFlag(_flagPlacer.Flag.transform.position);
             _freeCollectors.Remove(collector);
+            _flagPlacer.UnsetFlag();
         }
+    }
+
+    private void OnFirstSuppliesFound()
+    {
+        _scanner.SuppliesFounded -= OnFirstSuppliesFound;
+
+        if (!_initialSpawnDone)
+        {
+            SpawnCollectors();
+            Debug.Log(_initialSpawnDone);
+            _initialSpawnDone = true;
+        }
+
+        AssignCollector();
     }
 
     private void SpawnCollectors()
     {
-        if (_freeCollectors.Count == 0)
+        for (int i = _spawnedCount; i < _amountOfCollectorsToSpawn; i++)
         {
-            _collectorSpawner.StartSpawnCollectors();
+            Collector collector = _collectorSpawner.SpawnCollector(_dropOff);
+            _freeCollectors.Add(collector);
+            collector.ResetToSpawnPoint();
+            _spawnedCount++;
         }
     }
 
-    public SupplyBox AssignTask()
+    public void ExpansionCollectorsAmount()
     {
-        SupplyBox task;
+        _amountOfCollectorsToSpawn++;
 
-        if (_dataBase.SuppliesToCollect.Count != 0)
-        {
-            task = _dataBase.SuppliesToCollect.Dequeue();
-            _dataBase.SuppliesToDeliver.Add(task);
-        }
-        else
-        {
-            return null;
-        }
-
-        return task;
+        SpawnCollectors();
     }
 
     private void SetFreeFromTask(Collector collector)
     {
-        Debug.Log($"collectorID: {collector.gameObject.GetHashCode()} baseID: {gameObject.GetHashCode()}");
         _storage.SupplyDelivered(collector.TargetSupplyBox);
         collector.TargetSupplyBox.Destroy();
         collector.FreeFromTask();
@@ -121,16 +138,30 @@ public class Base : MonoBehaviour
 
     private void AssignCollector()
     {
+        if (_dataBase.SuppliesToCollect.Count == 0 || _freeCollectors.Count == 0) return;
+
         for (int i = _freeCollectors.Count - 1; i >= 0; i--)
         {
-            Collector collector = _freeCollectors[i];
+            if (_dataBase.SuppliesToCollect.Count == 0) break;
 
-            if (!collector.IsBusy)
-            {
-                collector.RecieveTargetPosition(_collectorSpawner.RequestToAssignTask());
-                Reassigned?.Invoke(collector);
-                _freeCollectors.RemoveAt(i);
-            }
+            SupplyBox task = RequestToAssignTask();
+            Collector collector = _freeCollectors[i];
+            collector.RecieveTargetPosition(task);
+            SendToWork(collector);
+            _freeCollectors.RemoveAt(i);
         }
+    }
+
+    private void SendToWork(Collector collector)
+    {
+        collector.Init();
+    }
+
+    public SupplyBox RequestToAssignTask()
+    {
+        SupplyBox task = _dataBase.SuppliesToCollect.Dequeue();
+        _dataBase.SuppliesToDeliver.Add(task);
+
+        return task;
     }
 }
