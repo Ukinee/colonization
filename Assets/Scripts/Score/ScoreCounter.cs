@@ -18,5 +18,6 @@ public class ScoreCounter : MonoBehaviour
    public void SpendScore(int value)
    {
        Score -= value;
+      ScoreChanged?.Invoke(Score);
    }
 }

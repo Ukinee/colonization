@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
 {
-    public Action<Collector> CollectorReached;
+    public event Action<Collector> CollectorReached;
 
     private void OnTriggerEnter(Collider collision)
     {
