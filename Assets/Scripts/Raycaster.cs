@@ -3,17 +3,49 @@ using UnityEngine;
 
 public class Raycaster : MonoBehaviour
 {
+    [SerializeField] private InputReader _inputReader;
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] private LayerMask _baseMask;
 
-    private RaycastHit _hit;
     private Camera _camera;
-
-    public Action OnBaseHit;
+    private Base _currentBase;
 
     private void Awake()
     {
         _camera = Camera.main;
+    }
+
+    private void OnEnable()
+    {
+        _inputReader.LeftMouseButtonClick += OnLeftMouseButtonClick;
+    }
+
+    private void Update()
+    {
+        if (_currentBase != null)
+        {
+            if (TryHitGround(_inputReader.MousePosition, out var position))
+            {
+                _currentBase.FlagPlacer.SetFlag(position);
+            }
+        }
+    }
+
+    private void OnLeftMouseButtonClick()
+    {
+        if (_currentBase == null)
+        {
+            TryHitBase(_inputReader.MousePosition);
+        }
+        else
+        {
+            _currentBase = null;
+        }
+    }
+
+    private void OnDisable()
+    {
+        _inputReader.LeftMouseButtonClick -= OnLeftMouseButtonClick;
     }
 
     public bool TryHitGround(Vector3 screenPosition, out Vector3 position)
@@ -21,9 +53,10 @@ public class Raycaster : MonoBehaviour
         position = Vector3.zero;
         Ray ray = _camera.ScreenPointToRay(screenPosition);
 
-        if (Physics.Raycast(ray, out _hit, 1000f, _groundMask))
+        if (Physics.Raycast(ray, out var hit, 1000f, _groundMask))
         {
-            position = _hit.point;
+            position = hit.point;
+
             return true;
         }
 
@@ -36,12 +69,7 @@ public class Raycaster : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f, _baseMask))
         {
-            Base baseObject = hit.collider.GetComponent<Base>();
-            
-            if (baseObject != null)
-            {
-                OnBaseHit?.Invoke();
-            }
+            _currentBase = hit.collider.GetComponent<Base>();
         }
     }
 }

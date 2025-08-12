@@ -42,7 +42,6 @@ public class Scanner : MonoBehaviour
 
         foreach (Collider supply in supplies)
         {
-            // toCollect.Enqueue(supply.GetComponent<SupplyBox>());
             SupplyBox supplyBox = supply.GetComponent<SupplyBox>();
 
             if (supplyBox != null && !toCollect.Contains(supplyBox))
@@ -69,10 +68,5 @@ public class Scanner : MonoBehaviour
 
             _collectableSupply = ScanForSupplies();
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, _scanRadius);
     }
 }
