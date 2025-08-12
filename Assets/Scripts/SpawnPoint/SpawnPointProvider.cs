@@ -3,10 +3,10 @@ using UnityEngine;
 public class SpawnPointProvider : MonoBehaviour
 {
     [SerializeField] private Base _base;
-    
+
     private float _offsetZ;
 
-    public SpawnPoint GetSpawnPoint() 
+    public SpawnPoint GetSpawnPoint()
     {
         float stepBetweenSpawnPoints = -5;
 
@@ -16,19 +16,16 @@ public class SpawnPointProvider : MonoBehaviour
 
             return _base.SpawnPoint;
         }
-        else
-        {
-            SpawnPoint newSpawnPoint = Instantiate(_base.SpawnPoint, _base.SpawnPoint.transform.position,
-                _base.SpawnPoint.transform.rotation);
-            newSpawnPoint.transform.Translate(0f, 0f, _offsetZ);
-            _offsetZ += stepBetweenSpawnPoints;
 
-            return newSpawnPoint;
-        }
-    }
+        SpawnPoint newSpawnPoint = Instantiate(
+            _base.SpawnPoint,
+            _base.SpawnPoint.transform.position,
+            _base.SpawnPoint.transform.rotation
+        );
 
-    public void ChangeOffsetZ(float value)
-    {
-        _offsetZ += value;
+        newSpawnPoint.transform.Translate(0f, 0f, _offsetZ);
+        _offsetZ += stepBetweenSpawnPoints;
+
+        return newSpawnPoint;
     }
 }

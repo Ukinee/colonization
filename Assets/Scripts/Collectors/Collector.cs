@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,11 +12,11 @@ public class Collector : MonoBehaviour
     private DropOff _dropPoint;
     private Vector3 _currentTarget;
     private float _distanceToInteract = 4f;
-    private bool _isBusy;
-    private bool IsFlagDestination = false;
+    private bool _isFlagDestination = false;
 
-    [field: SerializeField] public SupplyBox TargetSupplyBox { get; private set; }
-    public bool IsBusy { get; private set; }
+    public SupplyBox TargetSupplyBox { get; private set; }
+
+    public event Action<Collector> ReachedFlag;
 
     private void Awake()
     {
@@ -29,25 +30,21 @@ public class Collector : MonoBehaviour
             TryToPickUp();
         }
 
-        if (IsFlagDestination)
+        if (_isFlagDestination)
         {
             TryToReachFlag();
         }
     }
 
-    public void MarkAsBusy()
+    public void Init(BaseFactory baseFactory)
     {
-        _isBusy = true;
+        _baseFactory = baseFactory;
     }
 
-    public void Init()
+    public void SetBaseInfo(DropOff dropPoint, SpawnPoint spawnPoint)
     {
-        if (TargetSupplyBox != null && !_isBusy)
-        {
-            MarkAsBusy();
-            transform.LookAt(TargetSupplyBox.transform.position);
-            MoveTo(TargetSupplyBox.transform.position);
-        }
+        _dropPoint = dropPoint;
+        _spawnPoint = spawnPoint.transform;
     }
 
     public void ResetToSpawnPoint()
@@ -63,15 +60,11 @@ public class Collector : MonoBehaviour
         transform.LookAt(_spawnPoint.transform.position);
     }
 
-    public void RecieveBaseFactory(BaseFactory factory)
-    {
-        _baseFactory = factory;
-    }
-
     public void RecieveTargetPosition(SupplyBox target)
     {
         TargetSupplyBox = target;
-        transform.LookAt(target.transform.position);
+        transform.LookAt(TargetSupplyBox.transform.position);
+        MoveTo(TargetSupplyBox.transform.position);
     }
 
     public void FreeFromTask()
@@ -79,22 +72,11 @@ public class Collector : MonoBehaviour
         TargetSupplyBox = null;
     }
 
-    public void RecieveDropOffPosition(DropOff dropPoint)
-    {
-        _dropPoint = dropPoint;
-    }
-
-    public void RecieveSpawnPoint(SpawnPoint spawnPoint)
-    {
-        _spawnPoint = spawnPoint.transform;
-    }
-
     public void SetTargetToFlag(Vector3 flagPosition)
     {
-        Debug.Log("flag set as target");
         _currentTarget = flagPosition;
         TargetSupplyBox = null;
-        IsFlagDestination = true;
+        _isFlagDestination = true;
 
         transform.LookAt(_currentTarget);
         MoveTo(_currentTarget);
@@ -102,8 +84,7 @@ public class Collector : MonoBehaviour
 
     private void MarkAsFree()
     {
-        _isBusy = false;
-        IsFlagDestination = false;
+        _isFlagDestination = false;
     }
 
     private void MoveTo(Vector3 targetPosition)
@@ -120,17 +101,15 @@ public class Collector : MonoBehaviour
 
     private IEnumerator MoveToTargetRoutine()
     {
-        if (_currentTarget != null)
+        while (isActiveAndEnabled)
         {
-            _isBusy = true;
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                _currentTarget,
+                _moveSpeed * Time.deltaTime
+            );
 
-            while (isActiveAndEnabled)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, _currentTarget,
-                    _moveSpeed * Time.deltaTime);
-
-                yield return null;
-            }
+            yield return null;
         }
     }
 
@@ -153,6 +132,7 @@ public class Collector : MonoBehaviour
         if (Vector3.Distance(transform.position, _currentTarget) <= _distanceToInteract)
         {
             _baseFactory.CreateBase(this);
+            ReachedFlag?.Invoke(this);
             ResetToSpawnPoint();
         }
     }
